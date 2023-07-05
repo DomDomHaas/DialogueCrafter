@@ -1,10 +1,8 @@
 <template>
   <v-combobox v-model="characters"
               :items="predefinedCharacters"
-              :clearable="true"
               label="Characters"
               :placeholder="placeHolder"
-              prepend-icon="mdi-face-woman"
               variant="underlined"
               :multiple="true"
               item-title="name"
@@ -12,7 +10,7 @@
               :delimiters="[',']"
               hide-details
   >
-    <template v-slot:item="{ props, item, index }">
+    <template v-slot:item="{ props, item }">
       <CharacterIcon v-bind="props"
                      :iconId="item?.raw.iconId"
                      :name="item?.raw.name"
@@ -22,7 +20,7 @@
       ></CharacterIcon>
     </template>
 
-    <template v-slot:selection="{ props, item, index }">
+    <template v-slot:selection="{ props, item }">
       <CharacterIcon v-bind="props"
                      :iconId="item?.raw.iconId"
                      :name="item?.raw.name"
@@ -44,17 +42,17 @@
 import CharacterIcon from '@/components/CharacterIcon.vue'
 
 export default {
-  name: 'CharacterSelection',
+  name: 'CharacterInput',
   props: {
     predefinedCharacters: {
       type: Array,
-      default: () => undefined, // ['Eddie', 'Ivon', 'Malea'],
+      default: undefined,
     },
   },
   computed: {
     characters: {
       get() {
-        return this.predefinedCharacters;
+        return this.predefinedCharacters || [];
       },
       set(value) {
         let newValue = value;
@@ -68,7 +66,7 @@ export default {
           name: newValue,
         });
 
-        this.changeCharacters(this.predefinedCharacters, newCharacters);
+        this.changeCharacters(newCharacters);
       }
     },
   },
@@ -80,15 +78,12 @@ export default {
 
       if (charObj) {
         charObj.iconId = newId;
-        this.changeCharacters(this.characters, newCharacters);
+        this.changeCharacters(newCharacters);
       }
 
     },
-    changeCharacters(oldValue, newValue) {
-      this.$emit('changeCharacters', {
-        oldValue,
-        newValue,
-      });
+    changeCharacters(newValue) {
+      this.$emit('changeCharacters', newValue);
     },
   },
   components: {

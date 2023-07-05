@@ -9,14 +9,14 @@
                   item-title="name"
                   item-value="name" >
 
-    <template v-slot:item="{ props, item, index }">
+    <template v-slot:item="{ props, item }">
       <CharacterIcon v-bind="props"
                      :iconId="item?.raw.iconId"
                      :name="item?.raw.name"
       ></CharacterIcon>
     </template>
 
-    <template v-slot:selection="{ props, item, index }">
+    <template v-slot:selection="{ props, item }">
       <CharacterIcon v-bind="props"
                      :iconId="item?.raw.iconId"
                      :name="item?.raw.name"

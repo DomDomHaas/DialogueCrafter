@@ -15,6 +15,7 @@
                       prepend-icon="mdi-book"
                       hide-details
                       density="compact"
+                      variant="underlined"
                       class="pa-1">
         </v-text-field>
       </v-col>
@@ -40,10 +41,10 @@
 
     </v-row>
 
-    <v-row>
-      <ul v-if="expanded"
-          v-for="(dialogue, index) of dialogues"
+    <v-row v-if="expanded" >
+      <ul v-for="(dialogue, index) of dialogues"
           :id="`tree_${index}`"
+          :key="`tree_${index}`"
           style="display: flex;"
           class="tf-tree tf-gap-sm pa-2">
 

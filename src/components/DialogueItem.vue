@@ -29,9 +29,6 @@
       <v-row no-gutters
              style="align-items: center;">
         <v-col class="grow pa-0">
-<!--
-          v-model="itemTitle"
--->
           <v-text-field :model-value="itemTitle"
                         label="Dialogue Title"
                         hide-details
@@ -61,6 +58,7 @@
                       class="pa-1"
                       hide-details
                       density="compact"
+                      rows="1"
                       auto-grow>
 
           </v-textarea>
@@ -85,10 +83,9 @@
 
     </div>
 
-    <ul >
+    <ul v-if="children" >
 
-      <dialogue-item v-if="children"
-                     v-for="(dialogue, index) of children"
+      <dialogue-item v-for="(dialogue, index) of children"
                      :id="dialogue.id"
                      :title="dialogue.title"
                      :text="dialogue.text"

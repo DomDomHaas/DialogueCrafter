@@ -21,18 +21,34 @@
       </template>
     </v-app-bar>
 
+    <v-navigation-drawer location="right"
+                         temporary
+                         v-model="showCharacters"
+                          >
+      <CharactersView :predefined-characters="characters"
+                      @charactersChange="catchCharactersChange"
+      />
+    </v-navigation-drawer>
+
     <v-main >
       <v-container fluid="" >
-        <v-row>
-          <v-col>
-            <v-icon>mdi-information</v-icon> Create dialogue trees, save it and import it into your PlayDate game! Todo: make this info clickable to expand info about usage! Todo: add character list on top & dialogues can have character tags
+        <v-row justify="space-between">
+          <v-col class="flex-grow-1">
+            <v-icon>mdi-information</v-icon>
+            {{ mainInfo }}
+          </v-col>
+
+          <v-col class="flex-grow-0">
+            <v-btn @click.stop="showCharacters = !showCharacters">
+              Show Characters
+            </v-btn>
           </v-col>
         </v-row>
 
         <v-row>
           <v-col>
             <DialogueMain :dialogueList="jsonDialogues"
-                          @listUpdate="catchListUpdate"/>
+                          @chapterChange="catchListUpdate"/>
 
           </v-col>
         </v-row>
@@ -52,16 +68,47 @@
 
 <script>
 import DialogueMain from '@/components/DialogueMain.vue'
-import {fileOpen, fileSave} from "browser-fs-access";
+import { fileOpen, fileSave } from "browser-fs-access";
+
+import CharactersView from "@/components/CharactersView.vue";
 
 export default {
+  created() {
+    this.jsonDialogues = this.getInitDialogues();
+  },
   mounted() {
   },
   computed: {
+    characters() {
+      return this.jsonDialogues.characters;
+    },
   },
   methods: {
+    getInitDialogues() {
+      return {
+        characters: [],
+        chapters: [{
+          id: 0,
+          name: '',
+          dialogues: [{
+            id: 0,
+            title: '',
+            character: undefined,
+            text: '',
+            options: [],
+          }],
+        }],
+      };
+    },
     catchListUpdate(list) {
       this.jsonDialogues = list;
+    },
+    catchCharactersChange(newCharacters) {
+      if (!this.jsonDialogues) {
+        this.jsonDialogues = {};
+      }
+
+      this.jsonDialogues.characters = newCharacters;
     },
     async saveFile() {
       this.fileError = null;
@@ -112,8 +159,11 @@ export default {
     jsonDialogues: null,
     fileError: null,
     showError: false,
+    showCharacters: false,
+    mainInfo: 'Create dialogue trees, save it and import it into your game engine!',
   }),
   components: {
+    CharactersView,
     DialogueMain,
   },
 };

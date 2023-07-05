@@ -2,29 +2,7 @@
   <v-container :fluid="true"
                class="pa-4">
 
-    <v-row align="center" >
-      <v-col class='flex-shrink-1 flex-grow-0' cols='3'>
-        Characters can be used to reference the different dialogue items with the chapters.
-        The characters icons are only working in the editor.
-      </v-col>
-
-      <v-col class='px-4 flex-grow-1'>
-        <CharacterInput :predefined-characters="characters"
-                        @changeCharacters="catchCharactersChange"/>
-      </v-col>
-    </v-row>
-
-<!--    <v-row v-if="!hasChapters"
-           align="center"
-    >
-      <v-col cols="12" class="flex-grow-0 flex-shrink-0">
-        No Dialogues yet! Start with adding a chapter
-      </v-col>
-
-    </v-row>-->
-
-    <v-row v-if="hasChapters"
-           v-for="(chapter, index) of chapters"
+    <v-row v-for="(chapter, index) of chapters"
            :key="index"
             style="flex-wrap: nowrap;" >
 
@@ -36,7 +14,9 @@
                          @addItem="catchAddItem"
                          @addChapterItem="catchAddChapterItem"
                          @changeChapterProperty="catchChapterPropertyChange"
-                         @changeProperty="catchPropertyChange" />
+                         @changeProperty="catchPropertyChange"
+                         @clearItem="catchClearItem"
+        />
       </v-col>
     </v-row>
 
@@ -59,12 +39,8 @@
 
 </template>
 <script>
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import DialogueChapter from "@/components/DialogueChapter.vue";
-import CharacterInput from '@/components/CharacterInput.vue'
-/*
-import jsonDialogues from "@/../public/dialogueTest.json";
-*/
 
 export default defineComponent({
   name: "DialogueMain",
@@ -104,7 +80,7 @@ export default defineComponent({
       const listItem = this.getDialogueItemFromChapters(this.chapters, chapterName, id, title);
       this.addItemOption(listItem);
 
-      this.$emit('listUpdate', this.myList);
+      this.$emit('chapterChange', this.myList);
     },
     catchAddChapter() {
       if (this.myList === null) {
@@ -113,13 +89,13 @@ export default defineComponent({
 
       this.addChapter(this.chapters);
 
-      this.$emit('listUpdate', this.myList);
+      this.$emit('chapterChange', this.myList);
     },
     catchAddChapterItem(chapterName) {
       const chapter = this.chapters.filter((c) => c.name === chapterName)[0] || null;
       if (chapter) {
         this.addDialogue(chapter);
-        this.$emit('listUpdate', this.myList);
+        this.$emit('chapterChange', this.myList);
       }
     },
     catchPropertyChange({ id,
@@ -133,7 +109,7 @@ export default defineComponent({
       const listItem = this.getDialogueItemFromChapters(this.myList.chapters, chapterName, id, title);
       if (listItem) {
         listItem[property] = newValue;
-        this.$emit('listUpdate', this.myList);
+        this.$emit('chapterChange', this.myList);
       }
     },
     catchChapterPropertyChange({ id,
@@ -146,12 +122,8 @@ export default defineComponent({
       const chapter = this.chapters.filter((c) => c.id === id && c.name === chapterName)[0] || null;
       if (chapter) {
         chapter[property] = newValue;
-        this.$emit('listUpdate', this.myList);
+        this.$emit('chapterChange', this.myList);
       }
-    },
-    catchCharactersChange({ oldValue, newValue }) {
-      this.myList.characters = newValue;
-      this.$emit('listUpdate', this.myList);
     },
     addChapter(chapterList) {
       if (!chapterList) {
@@ -252,7 +224,7 @@ export default defineComponent({
   data: () => ({
     myList: null,
   }),
-  components: { CharacterInput, DialogueChapter },
+  components: { DialogueChapter },
 })
 </script>
 

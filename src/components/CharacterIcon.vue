@@ -45,7 +45,7 @@ export default {
     },
     name: {
       type: String,
-      default: 'Frank',
+      default: '',
     },
     density: {
       type: String,
